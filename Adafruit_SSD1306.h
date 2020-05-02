@@ -139,11 +139,13 @@ class Adafruit_SSD1306 : public Adafruit_GFX {
 
   ~Adafruit_SSD1306(void);
 
-  boolean      begin(uint8_t switchvcc=SSD1306_SWITCHCAPVCC,
-                 uint8_t i2caddr=0, boolean reset=true,
+  virtual boolean begin() { return begin(SSD1306_SWITCHCAPVCC); }
+  boolean      begin(uint8_t switchvcc,
+                 uint8_t i2caddr=0x3C, boolean reset=true,
                  boolean periphBegin=true);
   void         display(void);
   void         clearDisplay(void);
+  virtual void clear() {clearDisplay();}
   void         invertDisplay(boolean i);
   void         dim(boolean dim);
   void         drawPixel(int16_t x, int16_t y, uint16_t color);
