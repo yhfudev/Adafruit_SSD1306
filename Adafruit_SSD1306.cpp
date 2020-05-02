@@ -458,12 +458,23 @@ boolean Adafruit_SSD1306::begin(uint8_t vcs, uint8_t addr, boolean reset,
     return false;
 
   clearDisplay();
+
   if(HEIGHT > 32) {
     drawBitmap((WIDTH - splash1_width) / 2, (HEIGHT - splash1_height) / 2,
       splash1_data, splash1_width, splash1_height, 1);
   } else {
     drawBitmap((WIDTH - splash2_width) / 2, (HEIGHT - splash2_height) / 2,
       splash2_data, splash2_width, splash2_height, 1);
+  }
+
+  // Reset SSD1306 if requested and reset pin specified in constructor
+  if(reset && (rstPin >= 0)) {
+    pinMode(     rstPin, OUTPUT);
+    digitalWrite(rstPin, HIGH);
+    delay(1);                   // VDD goes high at start, pause for 1 ms
+    digitalWrite(rstPin, LOW);  // Bring reset low
+    delay(10);                  // Wait 10 ms
+    digitalWrite(rstPin, HIGH); // Bring out of reset
   }
 
   vccstate = vcs;
@@ -504,16 +515,6 @@ boolean Adafruit_SSD1306::begin(uint8_t vcs, uint8_t addr, boolean reset,
       digitalWrite(clkPin, LOW); // Clock low
 #endif
     }
-  }
-
-  // Reset SSD1306 if requested and reset pin specified in constructor
-  if(reset && (rstPin >= 0)) {
-    pinMode(     rstPin, OUTPUT);
-    digitalWrite(rstPin, HIGH);
-    delay(1);                   // VDD goes high at start, pause for 1 ms
-    digitalWrite(rstPin, LOW);  // Bring reset low
-    delay(10);                  // Wait 10 ms
-    digitalWrite(rstPin, HIGH); // Bring out of reset
   }
 
   TRANSACTION_START
